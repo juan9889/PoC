@@ -1,0 +1,55 @@
+﻿@page "/dex"
+@inject HttpClient Http
+
+<PageTitle>Weather forecast</PageTitle>
+
+
+
+<MudText Typo="Typo.h6">MudBlazor is @Text</MudText>
+<MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="ButtonOnClick">@ButtonText</MudButton>
+
+
+<MudGrid>
+    <MudItem xs="2">
+        <PokeCard />
+    </MudItem>
+    <MudItem xs="2">
+        <PokeCard />
+    </MudItem>
+    <MudItem xs="2">
+        <PokeCard />
+    </MudItem>
+    <MudItem xs="2">
+        <PokeCard />
+    </MudItem>
+    <MudItem xs="2">
+        <PokeCard />
+    </MudItem>
+    <MudItem xs="2">
+        <PokeCard />
+    </MudItem>
+</MudGrid>
+
+
+@code {
+    string Text = "????";
+    string ButtonText = "Click Me";
+    int ButtonClicked;
+
+    void ButtonOnClick()
+    {
+        ButtonClicked += 1;
+        Text = $"Awesome x {ButtonClicked}";
+        ButtonText = "Click Me Again";
+    }
+
+
+    // Llamar a la API pokeapi.co y traer todos los pokemones.
+
+    protected override async Task OnInitializedAsync()
+    {
+        /*var response = await Http.GetAsync("https://pokeapi.co/api/v2/pokemon");
+        Pokemon pokemons = await response.Content.ReadFromJsonAsync<PokemonResponse>();
+        Console.WriteLine(pokemons); */
+    }
+}
