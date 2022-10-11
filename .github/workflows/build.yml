@@ -29,7 +29,7 @@ jobs:
       - name: Deploy to server
         uses: garygrossgarten/github-action-ssh@release
         with:
-          command: sh /home/comunidades/poc_deploy.sh
+          command: /home/comunidades/poc_deploy.sh
           host: ${{ secrets.PRODUCTION_HOST }}
           username: ${{ secrets.DEPLOY_USER }}
           password: ${{ secrets.DEPLOY_USER_PASSWORD }}
