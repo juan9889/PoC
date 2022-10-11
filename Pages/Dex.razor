@@ -1,55 +1,42 @@
 ﻿@page "/dex"
 @inject HttpClient Http
+@inject Blazored.LocalStorage.ILocalStorageService localStorage
 
-<PageTitle>Weather forecast</PageTitle>
-
-
-
-<MudText Typo="Typo.h6">MudBlazor is @Text</MudText>
-<MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="ButtonOnClick">@ButtonText</MudButton>
-
-
+<PageTitle>PokeDex</PageTitle>
+<MudProgressLinear Color="Color.Success" Size="Size.Large" Value="75" Style="position: fixed" />
+<br />
 <MudGrid>
+    @foreach(Pokemon p in todos){
     <MudItem xs="2">
         <PokeCard />
     </MudItem>
-    <MudItem xs="2">
-        <PokeCard />
-    </MudItem>
-    <MudItem xs="2">
-        <PokeCard />
-    </MudItem>
-    <MudItem xs="2">
-        <PokeCard />
-    </MudItem>
-    <MudItem xs="2">
-        <PokeCard />
-    </MudItem>
-    <MudItem xs="2">
-        <PokeCard />
-    </MudItem>
+    }
 </MudGrid>
 
 
 @code {
-    string Text = "????";
-    string ButtonText = "Click Me";
-    int ButtonClicked;
-
-    void ButtonOnClick()
-    {
-        ButtonClicked += 1;
-        Text = $"Awesome x {ButtonClicked}";
-        ButtonText = "Click Me Again";
-    }
-
-
-    // Llamar a la API pokeapi.co y traer todos los pokemones.
+    
+    List<Pokemon> todos=new();
+    List<Pokemon> vistos=new(); 
+    List<Pokemon> prueba=new();
+    
 
     protected override async Task OnInitializedAsync()
     {
         /*var response = await Http.GetAsync("https://pokeapi.co/api/v2/pokemon");
         Pokemon pokemons = await response.Content.ReadFromJsonAsync<PokemonResponse>();
         Console.WriteLine(pokemons); */
+        
+
+        //obtener la lista de pokemon ya marcados de localstorage
+        vistos=await localStorage.GetItemAsync<List<Pokemon>>("vistos");
+
+        //codigo de prueba para ver si se banca renderizar 1500 cards de una
+        for(int i=0; i<1500; i++){
+            Pokemon p = new();
+            prueba.Add(p);
+        }
+        todos=prueba;
+        StateHasChanged();
     }
 }

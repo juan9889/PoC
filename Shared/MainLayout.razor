@@ -1,14 +1,24 @@
 ﻿@inherits LayoutComponentBase
+@inject Blazored.LocalStorage.ILocalStorageService localStorage
 <MudThemeProvider/>
+<div class="page">
+    <MudLayout>
+         <NavBar />
+         <MudMainContent>
+            @Body
+        </MudMainContent>
+    </MudLayout>
 
-<div>
-    <div>
-        <NavBar/>
-    </div>
-    <main>
-        @Body
-    </main>
 </div>
 
+
 @code{
+    protected override async Task OnInitializedAsync(){
+        //inicializar datos en localstorage si estuviese vacio
+        bool initialized=await localStorage.ContainKeyAsync("vistos");
+        if(initialized==false){
+             List<Pokemon> vistos=new(); 
+             await localStorage.SetItemAsync("vistos", vistos);
+        }
+    }
 }
