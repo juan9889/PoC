@@ -14,8 +14,8 @@ jobs:
         uses: actions/checkout@master
 
       - name: Setup dotnet env
-        - uses: actions/setup-dotnet@v2
-          with:
+        uses: actions/setup-dotnet@v2
+        with:
             dotnet-version: '7.0.x'
             include-prerelease: true
         
