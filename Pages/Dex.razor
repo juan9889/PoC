@@ -3,6 +3,11 @@
 @inject Blazored.LocalStorage.ILocalStorageService localStorage
 
 <PageTitle>PokeDex</PageTitle>
+@if(loading){
+<br />
+<MudProgressLinear Color="Color.Primary" Indeterminate="true" Class="my-7" />
+<br />
+}else{
 <MudProgressLinear Color="Color.Success" Size="Size.Large" Value="75" Style="position: fixed" />
 <br />
 <MudGrid>
@@ -12,14 +17,14 @@
     </MudItem>
     }
 </MudGrid>
-
+}
 
 @code {
     
     List<Pokemon> todos=new();
     List<Pokemon> vistos=new(); 
     List<Pokemon> prueba=new();
-    
+    bool loading=false;
 
     protected override async Task OnInitializedAsync()
     {
@@ -27,16 +32,34 @@
         Pokemon pokemons = await response.Content.ReadFromJsonAsync<PokemonResponse>();
         Console.WriteLine(pokemons); */
         
+        //await Task.Delay(100);
 
         //obtener la lista de pokemon ya marcados de localstorage
         vistos=await localStorage.GetItemAsync<List<Pokemon>>("vistos");
 
-        //codigo de prueba para ver si se banca renderizar 1500 cards de una
+        //codigo de prueba para ver si se banca renderizar 1500 cards de una(puede, pero se lo nota muy lento, 15 segundos trabado es demasiado)
+        //mejor ir renderizando con un delay cada card, se mantiene todo fluido, pero tarda mucho en terminar y consume muchos recursos
+        //mucho mejor, renderizar los cambios al DOM cada 50 cards, de esta forma solo se llama 30 veces para 1500 pokemon, 
+        //y como para renderizar 50 cada vez lleva poco, la pagina queda usable inmediatamente
+        
         for(int i=0; i<1500; i++){
             Pokemon p = new();
-            prueba.Add(p);
+            if(i%50==0){
+                //intervalo de actualizacion, un numero mayor hace que la pagina tarde mas en quedar reactiva
+                //un numero mas chico hace que la pagina reaccione mas rapido al principio, pero lleva mas tiempo terminar de renderizar las cards y se pone mas lento
+                //dependiendo de la cantidad
+                //el delay libera el thread de la UI para que la aplicacion no se quede colgada hasta el final
+                await Task.Delay(10);
+                Console.WriteLine(i.ToString());
+                StateHasChanged();
+            }
+            todos.Add(p);
+            
+            
+            
         }
-        todos=prueba;
-        StateHasChanged();
+        //todos=prueba;
+        //loading=false;
+        //StateHasChanged();
     }
 }
