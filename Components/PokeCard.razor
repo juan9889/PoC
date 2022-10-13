@@ -1,15 +1,12 @@
 @inherits LayoutComponentBase
 
 <MudCard>
-    <MudCardMedia Image="icon-192.png" Height="200" />
-    <MudCardContent>
-        <MudText Typo="Typo.h5" Align="Align.Center">Old Paint</MudText>
-    </MudCardContent>
-    <MudCardActions>
-        <MudCheckBox @bind-Checked="@Basic_CheckBox1"></MudCheckBox>
-    </MudCardActions>
+    <MudCardMedia Image="@pokemon.Image" Height="200" />
+    <MudCheckBox @bind-Checked="@Basic_CheckBox1" Label="@pokemon.Name">
+    </MudCheckBox>
 </MudCard>
 
 @code {
     public bool Basic_CheckBox1 { get; set; } = true;
+    [Parameter] public Pokemon? pokemon { get; set; }
 }
