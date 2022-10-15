@@ -1,12 +1,26 @@
 @inherits LayoutComponentBase
 
-<MudCard>
+<MudCard @onclick="ChangeCheckBox">
     <MudCardMedia Image="@pokemon.Image" Height="200" />
-    <MudCheckBox @bind-Checked="@Basic_CheckBox1" Label="@pokemon.Name">
+    <MudCheckBox @bind-Checked="@seen" Disabled="true" Label="@pokemon.Name">
     </MudCheckBox>
 </MudCard>
 
 @code {
-    public bool Basic_CheckBox1 { get; set; } = true;
+    public bool seen { get; set; } = true;
     [Parameter] public Pokemon? pokemon { get; set; }
+
+    private void ChangeCheckBox(){
+        if(seen){
+            seen=false;
+        }else{
+            seen=true;
+        }
+        StateHasChanged();
+        UpdatePokemonList();
+    }
+
+    private void UpdatePokemonList(){
+        //todo: actualizar la lista y guardar en localstorage
+    }
 }

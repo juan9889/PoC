@@ -61,7 +61,7 @@ else
                 //pero lleva mas tiempo terminar de renderizar las cards y se pone mas lento
                 //dependiendo de la cantidad
                 //el delay libera el thread de la UI para que la aplicacion no se quede colgada hasta el final
-                await Task.Delay(10);
+                await Task.Delay(150);
                 Console.WriteLine(i.ToString());
                 StateHasChanged();
             }
