@@ -2,7 +2,7 @@
 
 <MudCard @onclick="ChangeCheckBox">
     <MudCardMedia Image="@pokemon.Image" Height="200" />
-    <MudCheckBox @bind-Checked="@seen" Disabled="true" Label="@pokemon.Name">
+    <MudCheckBox @bind-Checked="@seen" Label="@pokemon.Name">
     </MudCheckBox>
 </MudCard>
 
@@ -17,7 +17,7 @@
             seen=true;
         }
         StateHasChanged();
-        UpdatePokemonList();
+       
     }
 
     private void UpdatePokemonList(){
