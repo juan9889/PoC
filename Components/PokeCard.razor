@@ -7,8 +7,16 @@
 </MudCard>
 
 @code {
-    public bool seen { get; set; } = true;
     [Parameter] public Pokemon? pokemon { get; set; }
+
+    private bool _seen;
+    public bool seen { get{
+        return _seen;
+        }
+        set{
+            _seen=value;
+            UpdatePokemonList();
+    } }
 
     private void ChangeCheckBox(){
         if(seen){
@@ -16,11 +24,12 @@
         }else{
             seen=true;
         }
-        StateHasChanged();
+        
        
     }
 
     private void UpdatePokemonList(){
-        //todo: actualizar la lista y guardar en localstorage
+        //todo: actualizar la lista, guardar en localstorage, actualizar porcentaje
+        
     }
 }
