@@ -9,6 +9,9 @@
 @code {
     [Parameter] public Pokemon? pokemon { get; set; }
 
+    [Parameter]
+    public EventCallback<int> CheckCallback { get; set; }
+
     private bool _seen;
     public bool seen { get{
         return _seen;
@@ -28,8 +31,9 @@
        
     }
 
-    private void UpdatePokemonList(){
+    private async void UpdatePokemonList(){
         //todo: actualizar la lista, guardar en localstorage, actualizar porcentaje
-        
+     
+        await CheckCallback.InvokeAsync(pokemon.ID);
     }
 }

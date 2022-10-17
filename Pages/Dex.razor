@@ -3,32 +3,26 @@
 @inject Blazored.LocalStorage.ILocalStorageService localStorage
 
 <PageTitle>PokeDex</PageTitle>
-@if (loading)
-{
-    <br />
-    <MudProgressLinear Color="Color.Primary" Indeterminate="true" Class="my-7" />
-    <br />
-}
-else
-{
-    <MudProgressLinear Color="Color.Success" Size="Size.Large" Value="75" Style="position: fixed" />
+
+    <MudProgressLinear Striped="loading" Color="Color.Success" Size="Size.Large" Value="porcentaje" Style="position: fixed" />
     <br />
     <MudGrid>
         @foreach (Pokemon p in todos)
         {
             <MudItem xs="2">
-                <PokeCard Pokemon="@p" />
+                <PokeCard Pokemon="@p" CheckCallback="@UpdateCheckedPokemon" />
             </MudItem>
         }
     </MudGrid>
-}
+
 
 @code {
 
     List<Pokemon> todos = new();
     List<Pokemon> vistos = new();
     List<Pokemon> prueba = new();
-    bool loading = false;
+    bool loading = true;
+    int porcentaje=100;
 
     protected override async Task OnInitializedAsync()
     {
@@ -54,14 +48,14 @@ else
             p.ID = 3;
             p.Name = "pepe";
 
-            if (i % 50 == 0)
+            if (i % 100 == 0 || i==1499 || i==20)
             {
                 //intervalo de actualizacion, un numero mayor hace que la pagina tarde mas en quedar reactiva
                 //un numero mas chico hace que la pagina reaccione mas rapido al principio,
                 //pero lleva mas tiempo terminar de renderizar las cards y se pone mas lento
                 //dependiendo de la cantidad
                 //el delay libera el thread de la UI para que la aplicacion no se quede colgada hasta el final
-                await Task.Delay(150);
+                await Task.Delay(50);
                 Console.WriteLine(i.ToString());
                 StateHasChanged();
             }
@@ -73,5 +67,9 @@ else
         //todos=prueba;
         //loading=false;
         //StateHasChanged();
+    }
+    protected void UpdateCheckedPokemon(int id){
+        //Al cambiar el checkbox en una pokecard llega aca y ya tenemos el id
+        
     }
 }
