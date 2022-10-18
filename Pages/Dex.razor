@@ -4,16 +4,17 @@
 
 <PageTitle>PokeDex</PageTitle>
 
-    <MudProgressLinear Striped="loading" Color="Color.Success" Size="Size.Large" Value="porcentaje" Style="position: fixed" />
-    <br />
-    <MudGrid>
-        @foreach (Pokemon p in todos)
-        {
-            <MudItem xs="2">
-                <PokeCard Pokemon="@p" CheckCallback="@UpdateCheckedPokemon" />
-            </MudItem>
-        }
-    </MudGrid>
+<MudProgressLinear Striped="loading" Color="Color.Success" Size="Size.Large" Value="porcentaje"
+    Style="position: fixed" />
+<br />
+<MudGrid>
+    @foreach (Pokemon p in todos)
+    {
+        <MudItem xs="2">
+            <PokeCard Pokemon="@p" CheckCallback="@UpdateCheckedPokemon" />
+        </MudItem>
+    }
+</MudGrid>
 
 
 @code {
@@ -22,7 +23,7 @@
     List<Pokemon> vistos = new();
     List<Pokemon> prueba = new();
     bool loading = true;
-    int porcentaje=100;
+    int porcentaje = 50;
 
     protected override async Task OnInitializedAsync()
     {
@@ -45,10 +46,11 @@
         for (int i = 0; i < 1500; i++)
         {
             Pokemon p = new();
-            p.ID = 3;
-            p.Name = "pepe";
+            // llamar a la api para obtener los datos de cada pokemon
+            var response = await Http.GetAsync("https://pokeapi.co/api/v2/pokemon/" + (i + 1));
+            p = await response.Content.ReadFromJsonAsync<Pokemon>();
 
-            if (i % 100 == 0 || i==1499 || i==20)
+            if (i % 100 == 0 || i == 1499 || i == 20)
             {
                 //intervalo de actualizacion, un numero mayor hace que la pagina tarde mas en quedar reactiva
                 //un numero mas chico hace que la pagina reaccione mas rapido al principio,
@@ -68,8 +70,9 @@
         //loading=false;
         //StateHasChanged();
     }
-    protected void UpdateCheckedPokemon(int id){
+    protected void UpdateCheckedPokemon(int id)
+    {
         //Al cambiar el checkbox en una pokecard llega aca y ya tenemos el id
-        
+
     }
 }
