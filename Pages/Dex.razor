@@ -28,7 +28,7 @@
     List<Pokemon> prueba = new();
     bool loading = true;
     int porcentaje = 50;
-    List<List<Pokemon>> listoflist=new();
+    List<List<Pokemon>> listoflist=new();//a virtualize no le gusta si no lo hago asi
 
     protected override async Task OnInitializedAsync()
     {
@@ -40,13 +40,14 @@
 
         //obtener la lista de pokemon ya marcados de localstorage
         vistos = await localStorage.GetItemAsync<List<Pokemon>>("vistos");
-var response = await Http.GetAsync("https://pokeapi.co/api/v2/pokemon?offset=0&limit=1154");
+        var response = await Http.GetAsync("https://pokeapi.co/api/v2/pokemon?offset=0&limit=1154");
 
         var rs = response.Content.ReadAsStringAsync().Result;
 
         ApiResponse apiresp = JsonSerializer.Deserialize<ApiResponse>(rs);
 
         List<Pokemon> tmp =new();
+        //tuve que partir la lista de pokemon por renglones para poder utilizar virtualize
         for(int i=0;i<apiresp.results.Count;i++){
             
             
@@ -67,9 +68,9 @@ var response = await Http.GetAsync("https://pokeapi.co/api/v2/pokemon?offset=0&l
     protected void UpdateCheckedPokemon(int id)
     {
         //Al cambiar el checkbox en una pokecard llega aca y ya tenemos el id
-        Console.WriteLine("Marcado = "+id.ToString());
+       
     }
-
+//estos tipos son necesarios para no usar newtonsoft json
         public class Result
     {
         public string name { get; set; }
