@@ -1,10 +1,10 @@
 @inherits LayoutComponentBase
 
-<MudCard @onclick="ChangeCheckBox">
+<MudPaper  @onclick="ChangeCheckBox" Style="width: 150px">
     <MudCardMedia Image="@pokemon.Image" Height="200" />
     <MudCheckBox @bind-Checked="@seen" Label="@pokemon.Name">
     </MudCheckBox>
-</MudCard>
+</MudPaper>
 
 @code {
     [Parameter] public Pokemon? pokemon { get; set; }

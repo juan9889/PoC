@@ -6,15 +6,19 @@
 
 <MudProgressLinear Striped="loading" Color="Color.Success" Size="Size.Large" Value="porcentaje"
     Style="position: fixed" />
+    
 <br />
-<MudGrid>
-    @foreach (Pokemon p in todos)
-    {
-        <MudItem xs="2">
+
+    <Virtualize Items="listoflist" Context="list" >
+        <MudGrid>
+        @foreach(Pokemon p in list){
+            <MudItem xs="2">
             <PokeCard Pokemon="@p" CheckCallback="@UpdateCheckedPokemon" />
-        </MudItem>
-    }
-</MudGrid>
+            </MudItem>
+        }
+           </MudGrid>
+    </Virtualize>
+
 
 
 @code {
@@ -24,6 +28,7 @@
     List<Pokemon> prueba = new();
     bool loading = true;
     int porcentaje = 50;
+    List<List<Pokemon>> listoflist=new();
 
     protected override async Task OnInitializedAsync()
     {
@@ -35,44 +40,49 @@
 
         //obtener la lista de pokemon ya marcados de localstorage
         vistos = await localStorage.GetItemAsync<List<Pokemon>>("vistos");
+var response = await Http.GetAsync("https://pokeapi.co/api/v2/pokemon?offset=0&limit=1154");
 
-        //codigo de prueba para ver si se banca renderizar 1500 cards de una(puede,
-        //pero se lo nota muy lento, 15 segundos trabado es demasiado)
-        //mejor ir renderizando con un delay cada card, se mantiene todo fluido,
-        //pero tarda mucho en terminar y consume muchos recursos
-        //mucho mejor, renderizar los cambios al DOM cada 50 cards, de esta forma solo se llama 30 veces para 1500 pokemon,
-        //y como para renderizar 50 cada vez lleva poco, la pagina queda usable inmediatamente
+        var rs = response.Content.ReadAsStringAsync().Result;
 
-        for (int i = 0; i < 1500; i++)
-        {
+        ApiResponse apiresp = JsonSerializer.Deserialize<ApiResponse>(rs);
+
+        List<Pokemon> tmp =new();
+        for(int i=0;i<apiresp.results.Count;i++){
+            
+            
             Pokemon p = new();
-            // llamar a la api para obtener los datos de cada pokemon
-            var response = await Http.GetAsync("https://pokeapi.co/api/v2/pokemon/" + (i + 1));
-            p = await response.Content.ReadFromJsonAsync<Pokemon>();
-
-            if (i % 100 == 0 || i == 1499 || i == 20)
-            {
-                //intervalo de actualizacion, un numero mayor hace que la pagina tarde mas en quedar reactiva
-                //un numero mas chico hace que la pagina reaccione mas rapido al principio,
-                //pero lleva mas tiempo terminar de renderizar las cards y se pone mas lento
-                //dependiendo de la cantidad
-                //el delay libera el thread de la UI para que la aplicacion no se quede colgada hasta el final
-                await Task.Delay(50);
-                Console.WriteLine(i.ToString());
-                StateHasChanged();
+            p.ID=i+1;
+           
+            p.Name=apiresp.results[i].name;
+             
+            tmp.Add(p);
+            if(i%5==0 && i>0 ){
+                listoflist.Add(tmp);
+                tmp=new();
             }
-            todos.Add(p);
-
-
-
+            i++;
         }
-        //todos=prueba;
-        //loading=false;
-        //StateHasChanged();
+    StateHasChanged();
     }
     protected void UpdateCheckedPokemon(int id)
     {
         //Al cambiar el checkbox en una pokecard llega aca y ya tenemos el id
-
+        Console.WriteLine("Marcado = "+id.ToString());
     }
+
+        public class Result
+    {
+        public string name { get; set; }
+        public string url { get; set; }
+    }
+
+    public class ApiResponse
+    {
+        public int count { get; set; }
+        public string next { get; set; }
+        public object previous { get; set; }
+        public List<Result> results { get; set; }
+    }
+    
+
 }
