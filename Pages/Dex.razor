@@ -25,9 +25,8 @@
 
     List<Pokemon> todos = new();
     List<Pokemon> vistos = new();
-    List<Pokemon> prueba = new();
     bool loading = true;
-    int porcentaje = 50;
+    int porcentaje = 0;
     List<List<Pokemon>> listoflist = new();//a virtualize no le gusta si no lo hago asi
 
     protected override async Task OnInitializedAsync()
@@ -41,9 +40,7 @@
         //obtener la lista de pokemon ya marcados de localstorage
         vistos = await localStorage.GetItemAsync<List<Pokemon>>("vistos");
         var response = await Http.GetAsync("https://pokeapi.co/api/v2/pokemon?offset=0&limit=1154");
-
         var rs = response.Content.ReadAsStringAsync().Result;
-
         ApiResponse apiresp = JsonSerializer.Deserialize<ApiResponse>(rs);
 
         List<Pokemon> tmp = new();
@@ -77,16 +74,31 @@
     protected void UpdateCheckedPokemon(int id)
     {
         var p = todos.Find(x => x.ID == id);
-        Console.WriteLine(p);
-        if (vistos.Contains(p))
-        {
-            p.Seen = false;
-            vistos.Remove(p);
-        }
-        else
+        bool visto = false;
+        if (vistos.Count == 0)
         {
             p.Seen = true;
             vistos.Add(p);
+        }
+        else
+        {
+            for (int i = 0; i < vistos.Count; i++)
+            {
+                if (vistos[i].ID == p.ID)
+                {
+                    visto = true;
+                }
+            }
+            if (visto == true)
+            {
+                p.Seen = false;
+                vistos.Remove(p);
+            }
+            else
+            {
+                p.Seen = true;
+                vistos.Add(p);
+            }
         }
         Console.WriteLine(vistos.Count);
         localStorage.SetItemAsync("vistos", vistos);
