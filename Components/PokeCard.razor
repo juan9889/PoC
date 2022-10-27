@@ -1,39 +1,52 @@
 @inherits LayoutComponentBase
 
-<MudPaper  @onclick="ChangeCheckBox" Style="width: 150px">
+<MudPaper @onclick="ChangeCheckBox" Style="width: 150px">
     <MudCardMedia Image="@pokemon.Image" Height="200" />
-    <MudCheckBox @bind-Checked="@seen" Label="@pokemon.Name">
+    <MudCheckBox @bind-Checked="@pokemon.Seen" Label="@pokemon.Name">
     </MudCheckBox>
 </MudPaper>
 
 @code {
+
     [Parameter] public Pokemon? pokemon { get; set; }
+    // Marcar como visto si el pookemon está en la lista de vistos.
 
     [Parameter]
     public EventCallback<int> CheckCallback { get; set; }
 
     private bool _seen;
-    public bool seen { get{
-        return _seen;
+    public bool seen
+    {
+        get
+        {
+            return _seen;
         }
-        set{
-            _seen=value;
+        set
+        {
+            _seen = value;
             UpdatePokemonList();
-    } }
-
-    private void ChangeCheckBox(){
-        if(seen){
-            seen=false;
-        }else{
-            seen=true;
         }
-        
-       
     }
 
-    private async void UpdatePokemonList(){
+    private void ChangeCheckBox()
+    {
+        if (seen)
+        {
+            seen = false;
+        }
+        else
+        {
+            seen = true;
+        }
+
+
+
+    }
+
+    private async void UpdatePokemonList()
+    {
         //todo: actualizar la lista, guardar en localstorage, actualizar porcentaje
-     
+
         await CheckCallback.InvokeAsync(pokemon.ID);
     }
 }

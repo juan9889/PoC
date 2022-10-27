@@ -6,19 +6,19 @@
 
 <MudProgressLinear Striped="loading" Color="Color.Success" Size="Size.Large" Value="porcentaje"
     Style="position: fixed" />
-    
+
 <br />
 
-    <Virtualize Items="listoflist" Context="list" >
-        <MudGrid>
-        @foreach(Pokemon p in list){
+<Virtualize Items="listoflist" Context="list">
+    <MudGrid>
+        @foreach (Pokemon p in list)
+        {
             <MudItem xs="2">
-            <PokeCard Pokemon="@p" CheckCallback="@UpdateCheckedPokemon" />
+                <PokeCard Pokemon="@p" CheckCallback="@UpdateCheckedPokemon" />
             </MudItem>
         }
-           </MudGrid>
-    </Virtualize>
-
+    </MudGrid>
+</Virtualize>
 
 
 @code {
@@ -28,7 +28,7 @@
     List<Pokemon> prueba = new();
     bool loading = true;
     int porcentaje = 50;
-    List<List<Pokemon>> listoflist=new();//a virtualize no le gusta si no lo hago asi
+    List<List<Pokemon>> listoflist = new();//a virtualize no le gusta si no lo hago asi
 
     protected override async Task OnInitializedAsync()
     {
@@ -46,32 +46,55 @@
 
         ApiResponse apiresp = JsonSerializer.Deserialize<ApiResponse>(rs);
 
-        List<Pokemon> tmp =new();
+        List<Pokemon> tmp = new();
         //tuve que partir la lista de pokemon por renglones para poder utilizar virtualize
-        for(int i=0;i<apiresp.results.Count;i++){
-            
-            
+        for (int i = 0; i < apiresp.results.Count; i++)
+        {
             Pokemon p = new();
-            p.ID=i+1;
-           
-            p.Name=apiresp.results[i].name;
-             
+            p.ID = i + 1;
+            p.Name = apiresp.results[i].name;
+            if (vistos != null)
+            {
+                for (int j = 0; j < vistos.Count; j++)
+                {
+                    if (p.ID == vistos[j].ID)
+                    {
+                        p.Seen = true;
+                    }
+                }
+            }
+            todos.Add(p);
             tmp.Add(p);
-            if(i%5==0 && i>0 ){
+            if (i % 5 == 0 && i > 0)
+            {
                 listoflist.Add(tmp);
-                tmp=new();
+                tmp = new();
             }
             i++;
         }
-    StateHasChanged();
+        StateHasChanged();
     }
     protected void UpdateCheckedPokemon(int id)
     {
-        //Al cambiar el checkbox en una pokecard llega aca y ya tenemos el id
-       
+        var p = todos.Find(x => x.ID == id);
+        Console.WriteLine(p);
+        if (vistos.Contains(p))
+        {
+            p.Seen = false;
+            vistos.Remove(p);
+        }
+        else
+        {
+            p.Seen = true;
+            vistos.Add(p);
+        }
+        Console.WriteLine(vistos.Count);
+        localStorage.SetItemAsync("vistos", vistos);
+        StateHasChanged();
+
     }
-//estos tipos son necesarios para no usar newtonsoft json
-        public class Result
+    //estos tipos son necesarios para no usar newtonsoft json
+    public class Result
     {
         public string name { get; set; }
         public string url { get; set; }
@@ -84,6 +107,6 @@
         public object previous { get; set; }
         public List<Result> results { get; set; }
     }
-    
+
 
 }
