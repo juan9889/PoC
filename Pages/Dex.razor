@@ -26,7 +26,7 @@
     List<Pokemon> todos = new();
     List<Pokemon> vistos = new();
     bool loading = true;
-    int porcentaje = 0;
+    double porcentaje = 0;
     List<List<Pokemon>> listoflist = new();//a virtualize no le gusta si no lo hago asi
 
     protected override async Task OnInitializedAsync()
@@ -45,7 +45,7 @@
 
         List<Pokemon> tmp = new();
         //tuve que partir la lista de pokemon por renglones para poder utilizar virtualize
-        for (int i = 0; i < apiresp.results.Count; i++)
+        for (int i = 0; i < 100; i++)
         {
             Pokemon p = new();
             p.ID = i + 1;
@@ -69,6 +69,7 @@
             }
             i++;
         }
+        porcentaje = (vistos.Count / todos.Count) * 100;
         StateHasChanged();
     }
     protected void UpdateCheckedPokemon(int id)
@@ -102,6 +103,14 @@
         }
 
         localStorage.SetItemAsync("vistos", vistos);
+        porcentaje = Math.Round(vistos.Count / todos.Count) * 100;
+
+        // Actualizar el porcentaje dividiendo la cantidad de pokemon vistos entre la cantidad total de pokemon
+
+
+        Console.WriteLine(porcentaje);
+        Console.WriteLine(vistos.Count);
+        Console.WriteLine(todos.Count);
         StateHasChanged();
 
     }
