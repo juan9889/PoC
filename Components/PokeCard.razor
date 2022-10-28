@@ -1,10 +1,13 @@
 @inherits LayoutComponentBase
 
-<MudPaper @onclick="ChangeCheckBox" Style="width: 150px">
+<MudCard @onclick="ChangeCheckBox" Style="width: 150px">
     <MudCardMedia Image="@pokemon.Image" Height="200" />
-    <MudCheckBox @bind-Checked="@pokemon.Seen" Label="@pokemon.Name">
-    </MudCheckBox>
-</MudPaper>
+    @if(pokemon.Seen==false){
+    <MudIconButton Icon="@Icons.Filled.CheckBoxOutlineBlank" OnClick="ChangeCheckBox" aria-label="delete"></MudIconButton><span>@pokemon.Name</span>
+    }else{
+<MudIconButton Icon="@Icons.Filled.CheckBox" aria-label="delete" OnClick="ChangeCheckBox"></MudIconButton><span>@pokemon.Name</span>
+    }
+</MudCard>
 
 @code {
 
@@ -23,10 +26,13 @@
         }
         set
         {
+            Console.WriteLine("Setter alcanzado");
             _seen = value;
             UpdatePokemonList();
         }
     }
+
+    
 
     private void ChangeCheckBox()
     {
@@ -42,6 +48,8 @@
 
 
     }
+
+    
 
     private async void UpdatePokemonList()
     {
