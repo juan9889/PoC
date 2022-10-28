@@ -69,7 +69,7 @@
             }
             i++;
         }
-        porcentaje = (vistos.Count / todos.Count) * 100;
+        porcentaje = ((vistos.Count * 100) / todos.Count);
         StateHasChanged();
     }
     protected void UpdateCheckedPokemon(int id)
@@ -103,7 +103,7 @@
         }
 
         localStorage.SetItemAsync("vistos", vistos);
-        porcentaje = Math.Round(vistos.Count / todos.Count) * 100;
+        porcentaje = ((vistos.Count * 100) / todos.Count);
 
         // Actualizar el porcentaje dividiendo la cantidad de pokemon vistos entre la cantidad total de pokemon
 
