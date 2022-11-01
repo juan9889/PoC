@@ -4,7 +4,7 @@
 
 <PageTitle>PokeDex</PageTitle>
 
-<MudProgressLinear Color="Color.Success" Size="Size.Large" Value="porcentaje"
+<MudProgressLinear Color="@progress_color" Size="Size.Large" Value="porcentaje"
     Style="position: fixed" />
 
 <br />
@@ -26,7 +26,11 @@
     List<Pokemon> todos = new();
     List<Pokemon> vistos = new();
     bool loading = true;
+
+    bool render_last_line=false;
     double porcentaje = 0;
+
+    Color progress_color=Color.Default;
     List<List<Pokemon>> listoflist = new();//a virtualize no le gusta si no lo hago asi
 
     protected override async Task OnInitializedAsync()
@@ -67,9 +71,14 @@
                 listoflist.Add(tmp);
                 tmp = new();
             }
+            if(i==99){
+                //ultima linea
+                listoflist.Add(tmp);
+            }
         
         }
         porcentaje = ((vistos.Count * 100) / todos.Count);
+        UpdateColor();
         StateHasChanged();
     }
     protected void UpdateCheckedPokemon(int id)
@@ -104,7 +113,7 @@
 
         localStorage.SetItemAsync("vistos", vistos);
         porcentaje = ((vistos.Count * 100) / todos.Count);
-
+        UpdateColor();
         // Actualizar el porcentaje dividiendo la cantidad de pokemon vistos entre la cantidad total de pokemon
 
 
@@ -113,6 +122,30 @@
         Console.WriteLine(todos.Count);
         StateHasChanged();
 
+    }
+
+    private void UpdateColor(){
+     switch(porcentaje) 
+{
+  case <20 :
+    progress_color=Color.Error;
+    break;
+  case >=20 and < 40:
+    progress_color=Color.Warning;
+    break;
+  case >=40 and < 60:
+    progress_color=Color.Info;
+    break;
+  case >=60 and < 80:
+    progress_color=Color.Tertiary;
+    break;
+  case >=80 and <= 100:
+    progress_color=Color.Success;
+    break;
+  default:
+    // code block
+    break;
+}
     }
     //estos tipos son necesarios para no usar newtonsoft json
     public class Result
